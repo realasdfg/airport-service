@@ -124,7 +124,10 @@ STATIC_URL = "static/"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "airport.permissions.IsAdminOrIfAuthenticatedReadOnly",
+    ),
 }
 
 SIMPLE_JWT = {
