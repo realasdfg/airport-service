@@ -8,6 +8,7 @@ from airport.models import (
     AirplaneType,
     Airplane,
     Crew,
+    Flight,
 )
 
 
@@ -92,3 +93,37 @@ class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
         fields = ("id", "first_name", "last_name",)
+
+
+class FlightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flight
+        fields = (
+            "id",
+            "route",
+            "airplane",
+            "departure_time",
+            "arrival_time",
+            "crew",
+        )
+
+
+class FlightListSerializer(FlightSerializer):
+    route = serializers.StringRelatedField(
+        read_only=True,
+        source="route.__str__"
+    )
+    airplane = serializers.StringRelatedField(
+        read_only=True,
+        source="airplane.name"
+    )
+    crew = serializers.SlugRelatedField(
+        read_only=True,
+        many=True,
+        slug_field="full_name",
+    )
+
+
+class FlightDetailSerializer(FlightListSerializer):
+    route = RouteListSerializer(read_only=True)
+    airplane = AirplaneListSerializer(read_only=True)

@@ -8,6 +8,7 @@ from airport.models import (
     AirplaneType,
     Airplane,
     Crew,
+    Flight,
 )
 from airport.serializers import (
     CitySerializer,
@@ -21,6 +22,9 @@ from airport.serializers import (
     AirplaneListSerializer,
     AirplaneDetailSerializer,
     CrewSerializer,
+    FlightSerializer,
+    FlightListSerializer,
+    FlightDetailSerializer,
 )
 
 
@@ -99,3 +103,41 @@ class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
     permission_classes = (IsAdminUser,)
+
+
+class FlightViewSet(viewsets.ModelViewSet):
+    queryset = Flight.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FlightListSerializer
+        if self.action == "retrieve":
+            return FlightDetailSerializer
+
+        return FlightSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if self.action == "list":
+            queryset = (
+                queryset
+                .select_related(
+                    "route__source",
+                    "route__destination",
+                    "airplane"
+                )
+                .prefetch_related("crew")
+            )
+        if self.action == "retrieve":
+            queryset = (
+                queryset
+                .select_related(
+                    "route__source__closest_big_city",
+                    "route__destination__closest_big_city",
+                    "airplane__airplane_type"
+                )
+                .prefetch_related("crew")
+            )
+
+        return queryset
