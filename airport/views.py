@@ -4,6 +4,7 @@ from airport.models import (
     City,
     Airport,
     Route,
+    AirplaneType,
 )
 from airport.serializers import (
     CitySerializer,
@@ -12,6 +13,7 @@ from airport.serializers import (
     AirportDetailSerializer,
     RouteSerializer,
     RouteListSerializer,
+    AirplaneTypeSerializer,
 )
 
 
@@ -59,3 +61,8 @@ class RouteViewSet(viewsets.ModelViewSet):
             )
 
         return queryset
+
+
+class AirplaneTypeViewSet(viewsets.ModelViewSet):
+    queryset = AirplaneType.objects.all()
+    serializer_class = AirplaneTypeSerializer
