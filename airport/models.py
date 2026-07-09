@@ -54,10 +54,16 @@ class Route(models.Model):
     @staticmethod
     def validate_source_destination(source, destination, error_to_raise):
         if source and destination and source == destination:
-            raise error_to_raise("Source and destination airports cannot be the same.")
+            raise error_to_raise(
+                "Source and destination airports cannot be the same."
+            )
 
     def clean(self):
-        Route.validate_source_destination(self.source, self.destination, ValidationError)
+        Route.validate_source_destination(
+            self.source,
+            self.destination,
+            ValidationError
+        )
 
     def __str__(self):
         return self.source.name + " -> " + self.destination.name
