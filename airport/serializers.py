@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from airport.models import (
     City,
@@ -36,6 +37,15 @@ class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = ("id", "source", "destination", "distance",)
+
+    def validate(self, attrs):
+        data = super(RouteSerializer, self).validate(attrs=attrs)
+        Route.validate_source_destination(
+            attrs["source"],
+            attrs["destination"],
+            ValidationError
+        )
+        return data
 
 
 class RouteListSerializer(serializers.ModelSerializer):

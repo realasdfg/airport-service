@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q, F
 
 
 class City(models.Model):
@@ -38,7 +40,24 @@ class Route(models.Model):
     distance = models.FloatField()
 
     class Meta:
-        unique_together = ("source", "destination")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source", "destination"],
+                name="unique_source_destination_route"
+            ),
+            models.CheckConstraint(
+                condition=~Q(source=F("destination")),
+                name="source_not_equal_destination_route",
+            ),
+        ]
+
+    @staticmethod
+    def validate_source_destination(source, destination, error_to_raise):
+        if source and destination and source == destination:
+            raise error_to_raise("Source and destination airports cannot be the same.")
+
+    def clean(self):
+        Route.validate_source_destination(self.source, self.destination, ValidationError)
 
     def __str__(self):
         return self.source.name + " -> " + self.destination.name
