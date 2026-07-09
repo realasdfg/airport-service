@@ -26,6 +26,10 @@ class AirportListSerializer(AirportSerializer):
     )
 
 
+class AirportDetailSerializer(AirportSerializer):
+    closest_big_city = CitySerializer(read_only=True)
+
+
 class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
