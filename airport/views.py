@@ -33,8 +33,10 @@ class AirportViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+
         if self.action in ["list", "retrieve"]:
             queryset = queryset.select_related("closest_big_city")
+
         return queryset
 
 
@@ -49,9 +51,11 @@ class RouteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+
         if self.action in ["list", "retrieve"]:
             queryset = queryset.select_related(
                 "source__closest_big_city",
                 "destination__closest_big_city"
             )
+
         return queryset
