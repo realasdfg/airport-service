@@ -19,4 +19,4 @@ class AirportSerializer(serializers.ModelSerializer):
 
 
 class AirportListSerializer(AirportSerializer):
-    closest_big_city = CitySerializer()
+    closest_big_city = CitySerializer(read_only=True)
