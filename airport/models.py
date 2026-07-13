@@ -51,7 +51,8 @@ class Airport(CoordinatesMixin, models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return (f"{self.name} ({self.iata_code}) "
+                f"({self.closest_big_city.country})")
 
 
 class Route(models.Model):
