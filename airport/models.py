@@ -1,3 +1,5 @@
+from math import radians, sin, cos, sqrt, atan2
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -63,7 +65,11 @@ class Route(models.Model):
         on_delete=models.CASCADE,
         related_name="routes_to"
     )
-    distance = models.FloatField()
+    distance = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        editable=False
+    )
 
     class Meta:
         constraints = [
@@ -84,6 +90,30 @@ class Route(models.Model):
                 "Source and destination airports cannot be the same."
             )
 
+    @staticmethod
+    def calculate_distance(lat1, lon1, lat2, lon2):
+        earth_r = 6371
+
+        lat1, lon1 = radians(float(lat1)), radians(float(lon1))
+        lat2, lon2 = radians(float(lat2)), radians(float(lon2))
+        d_lat = lat2 - lat1
+        d_lon = lon2 - lon1
+
+        a = (sin(d_lat / 2) ** 2
+             + cos(lat1) * cos(lat2) * sin(d_lon / 2) ** 2)
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return round(earth_r * c, 2)
+
+    def save(self, *args, **kwargs):
+        self.distance = self.calculate_distance(
+            self.source.latitude,
+            self.source.longitude,
+            self.destination.latitude,
+            self.destination.longitude,
+        )
+        super().save(*args, **kwargs)
+
     def clean(self):
         Route.validate_source_destination(
             self.source,
@@ -92,7 +122,7 @@ class Route(models.Model):
         )
 
     def __str__(self):
-        return self.source.name + " -> " + self.destination.name
+        return self.source.iata_code + " -> " + self.destination.iata_code
 
 
 class AirplaneType(models.Model):
