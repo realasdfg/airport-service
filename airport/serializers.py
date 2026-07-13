@@ -7,6 +7,7 @@ from airport.models import (
     Route,
     AirplaneType,
     Airplane,
+    Position,
     Crew,
     Flight,
 )
@@ -94,6 +95,12 @@ class AirplaneListSerializer(AirplaneSerializer):
 
 class AirplaneDetailSerializer(AirplaneSerializer):
     airplane_type = AirplaneTypeSerializer(read_only=True)
+
+
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ("id", "name",)
 
 
 class CrewSerializer(serializers.ModelSerializer):
