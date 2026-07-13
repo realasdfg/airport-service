@@ -5,9 +5,7 @@ from django.db import models
 from django.db.models import Q, F
 
 
-class City(models.Model):
-    name = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
+class CoordinatesMixin(models.Model):
     latitude = models.DecimalField(
         max_digits=9,
         decimal_places=6,
@@ -26,17 +24,27 @@ class City(models.Model):
     )
 
     class Meta:
+        abstract = True
+
+
+class City(CoordinatesMixin, models.Model):
+    name = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+
+    class Meta:
         verbose_name_plural = "cities"
 
     def __str__(self):
-        return self.name
+        return (f"{self.name}, {self.country} "
+                f"({self.latitude}, {self.longitude})")
 
 
-class Airport(models.Model):
+class Airport(CoordinatesMixin, models.Model):
     name = models.CharField(max_length=255)
+    iata_code = models.CharField(max_length=3, unique=True)
     closest_big_city = models.ForeignKey(
         City,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="airports"
     )
 

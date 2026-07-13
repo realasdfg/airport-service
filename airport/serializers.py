@@ -21,13 +21,20 @@ class CitySerializer(serializers.ModelSerializer):
 class AirportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airport
-        fields = ("id", "name", "closest_big_city",)
+        fields = (
+            "id",
+            "name",
+            "iata_code",
+            "closest_big_city",
+            "latitude",
+            "longitude"
+        )
 
 
 class AirportListSerializer(AirportSerializer):
     closest_big_city = serializers.StringRelatedField(
         read_only=True,
-        source="closest_big_city.name",
+        source="closest_big_city.__str__",
     )
 
 
