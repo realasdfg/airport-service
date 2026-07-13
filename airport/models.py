@@ -151,9 +151,23 @@ class Airplane(models.Model):
         return self.name
 
 
+class Position(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Crew(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.SET_NULL,
+        related_name="crews",
+        null=True,
+        blank=True,
+    )
 
     @property
     def full_name(self):

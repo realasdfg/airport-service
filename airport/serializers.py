@@ -99,7 +99,7 @@ class AirplaneDetailSerializer(AirplaneSerializer):
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
-        fields = ("id", "first_name", "last_name",)
+        fields = ("id", "first_name", "last_name", "position")
 
 
 class FlightSerializer(serializers.ModelSerializer):
