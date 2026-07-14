@@ -149,6 +149,7 @@ class FlightListSerializer(FlightSerializer):
     )
 
 
-class FlightDetailSerializer(FlightListSerializer):
+class FlightDetailSerializer(FlightSerializer):
     route = RouteListSerializer(read_only=True)
     airplane = AirplaneListSerializer(read_only=True)
+    crew = CrewListSerializer(read_only=True, many=True)
