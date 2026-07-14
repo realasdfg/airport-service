@@ -140,6 +140,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "airport.permissions.IsAdminOrIfAuthenticatedReadOnly",
     ),
+    "DEFAULT_PAGINATION_CLASS": "airport_service.pagination.StandardResultsSetPagination",
 }
 
 SIMPLE_JWT = {
