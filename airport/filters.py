@@ -6,7 +6,9 @@ from airport.models import (
     Airport,
     Route,
     AirplaneType,
-    Airplane, Position,
+    Airplane,
+    Position,
+    Crew,
 )
 
 
@@ -93,3 +95,15 @@ class PositionFilter(django_filters.FilterSet):
     class Meta:
         model = Position
         fields = ("name",)
+
+
+class CrewFilter(django_filters.FilterSet):
+    first_name = django_filters.CharFilter(lookup_expr="icontains")
+    last_name = django_filters.CharFilter(lookup_expr="icontains")
+    positions = NumberInFilter(
+        field_name="position__id",
+    )
+
+    class Meta:
+        model = Crew
+        fields = ("first_name", "last_name", "positions",)

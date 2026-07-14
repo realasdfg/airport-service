@@ -10,6 +10,7 @@ from airport.filters import (
     AirplaneTypeFilter,
     AirplaneFilter,
     PositionFilter,
+    CrewFilter,
 )
 from airport.models import (
     City,
@@ -132,6 +133,7 @@ class PositionViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     permission_classes = (IsAdminUser,)
+    filterset_class = CrewFilter
 
     def get_serializer_class(self):
         if self.action == "list":
