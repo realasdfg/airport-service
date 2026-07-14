@@ -3,6 +3,9 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
+from airport.filters import (
+    CityFilter,
+)
 from airport.models import (
     City,
     Airport,
@@ -41,6 +44,7 @@ from airport.serializers import (
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
+    filterset_class = CityFilter
 
 
 class AirportViewSet(viewsets.ModelViewSet):
@@ -152,8 +156,8 @@ class FlightViewSet(viewsets.ModelViewSet):
 
         queryset = queryset.annotate(
             tickets_available=(
-                F("airplane__rows") * F("airplane__seats_in_row")
-                - Count("tickets")
+                    F("airplane__rows") * F("airplane__seats_in_row")
+                    - Count("tickets")
             )
         )
 
