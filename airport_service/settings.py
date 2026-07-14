@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_filters",
     "debug_toolbar",
     "user",
     "airport",
@@ -141,6 +142,9 @@ REST_FRAMEWORK = {
         "airport.permissions.IsAdminOrIfAuthenticatedReadOnly",
     ),
     "DEFAULT_PAGINATION_CLASS": "airport_service.pagination.StandardResultsSetPagination",
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ),
 }
 
 SIMPLE_JWT = {
