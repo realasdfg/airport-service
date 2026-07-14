@@ -9,6 +9,7 @@ from airport.models import (
     Airplane,
     Position,
     Crew,
+    Flight,
 )
 
 
@@ -107,3 +108,33 @@ class CrewFilter(django_filters.FilterSet):
     class Meta:
         model = Crew
         fields = ("first_name", "last_name", "positions",)
+
+
+class FlightFilter(django_filters.FilterSet):
+    crews = NumberInFilter(field_name="crew__id")
+    has_available_tickets = django_filters.BooleanFilter(
+        method="filter_has_available_tickets"
+    )
+    departure_time = django_filters.IsoDateTimeFromToRangeFilter(
+        field_name="departure_time",
+    )
+    arrival_time = django_filters.IsoDateTimeFromToRangeFilter(
+        field_name="arrival_time",
+    )
+    route = RouteFilter()
+
+    class Meta:
+        model = Flight
+        fields = (
+            "crews",
+            "has_available_tickets",
+            "departure_time",
+            "arrival_time",
+            "route",
+        )
+
+    @staticmethod
+    def filter_has_available_tickets(queryset, name, value):
+        if value:
+            return queryset.filter(tickets_available__gt=0)
+        return queryset.filter(tickets_available__lte=0)

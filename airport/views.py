@@ -11,6 +11,7 @@ from airport.filters import (
     AirplaneFilter,
     PositionFilter,
     CrewFilter,
+    FlightFilter,
 )
 from airport.models import (
     City,
@@ -154,6 +155,7 @@ class CrewViewSet(viewsets.ModelViewSet):
 
 class FlightViewSet(viewsets.ModelViewSet):
     queryset = Flight.objects.all()
+    filterset_class = FlightFilter
 
     def get_serializer_class(self):
         if self.action == "list":
