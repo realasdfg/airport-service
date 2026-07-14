@@ -190,7 +190,29 @@ class Flight(models.Model):
     )
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
-    crew = models.ManyToManyField(Crew, related_name="flights")
+    crew = models.ManyToManyField(Crew, blank=True, related_name="flights")
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(arrival_time__gt=F("departure_time")),
+                name="arrival_time_later_than_departure_flight",
+            ),
+        ]
+
+    @staticmethod
+    def validate_times(departure_time, arrival_time, error_to_raise):
+        if departure_time and arrival_time and arrival_time <= departure_time:
+            raise error_to_raise(
+                "Arrival time must be later than departure time."
+            )
+
+    def clean(self):
+        Flight.validate_times(
+            self.departure_time,
+            self.arrival_time,
+            ValidationError
+        )
 
     def __str__(self):
         return f"{self.route} - {self.airplane}"
