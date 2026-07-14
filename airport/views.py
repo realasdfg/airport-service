@@ -1,5 +1,6 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
+from rest_framework import viewsets, mixins
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
 from airport.models import (
     City,
@@ -10,6 +11,7 @@ from airport.models import (
     Position,
     Crew,
     Flight,
+    Order,
 )
 from airport.serializers import (
     CitySerializer,
@@ -29,6 +31,9 @@ from airport.serializers import (
     FlightSerializer,
     FlightListSerializer,
     FlightDetailSerializer,
+    OrderSerializer,
+    OrderListSerializer,
+    OrderDetailSerializer,
 )
 
 
@@ -166,3 +171,44 @@ class FlightViewSet(viewsets.ModelViewSet):
             )
 
         return queryset
+
+
+class OrderViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
+    queryset = Order.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(user=self.request.user)
+
+        queryset = queryset.prefetch_related(
+            "tickets__flight__crew",
+            "tickets__flight__airplane",
+            "tickets__flight__route__source",
+            "tickets__flight__route__destination",
+        )
+
+        if self.action == "retrieve":
+            queryset = queryset.prefetch_related(
+                "tickets__flight__crew__position",
+                "tickets__flight__airplane__airplane_type",
+                "tickets__flight__route__source__closest_big_city",
+                "tickets__flight__route__destination__closest_big_city",
+            )
+
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+        if self.action == "retrieve":
+            return OrderDetailSerializer
+
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
