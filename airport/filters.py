@@ -10,6 +10,7 @@ from airport.models import (
     Position,
     Crew,
     Flight,
+    Order,
 )
 
 
@@ -138,3 +139,13 @@ class FlightFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(tickets_available__gt=0)
         return queryset.filter(tickets_available__lte=0)
+
+
+class OrderFilter(django_filters.FilterSet):
+    created = django_filters.IsoDateTimeFromToRangeFilter(
+        field_name="created_at",
+    )
+
+    class Meta:
+        model = Order
+        fields = ("created",)

@@ -12,6 +12,7 @@ from airport.filters import (
     PositionFilter,
     CrewFilter,
     FlightFilter,
+    OrderFilter,
 )
 from airport.models import (
     City,
@@ -207,6 +208,7 @@ class OrderViewSet(
 ):
     queryset = Order.objects.all()
     permission_classes = (IsAuthenticated,)
+    filterset_class = OrderFilter
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
