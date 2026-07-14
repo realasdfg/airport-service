@@ -3,6 +3,7 @@ import django_filters
 from airport.models import (
     City,
     Airport,
+    Route,
 )
 
 
@@ -31,3 +32,20 @@ class AirportFilter(django_filters.FilterSet):
     class Meta:
         model = Airport
         fields = ("country", "iata_code", "name", "cities",)
+
+
+class RouteFilter(django_filters.FilterSet):
+    source = django_filters.NumberFilter()
+    destination = django_filters.NumberFilter()
+    source_iata = django_filters.CharFilter(
+        field_name="source__iata_code",
+        lookup_expr="icontains",
+    )
+    destination_iata = NumberInFilter(
+        field_name="destination__iata_code",
+        lookup_expr="icontains",
+    )
+
+    class Meta:
+        model = Route
+        fields = ("source", "destination", "source_iata", "destination_iata",)

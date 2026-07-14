@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 from airport.filters import (
     CityFilter,
     AirportFilter,
+    RouteFilter,
 )
 from airport.models import (
     City,
@@ -71,6 +72,7 @@ class AirportViewSet(viewsets.ModelViewSet):
 
 class RouteViewSet(viewsets.ModelViewSet):
     queryset = Route.objects.all()
+    filterset_class = RouteFilter
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
