@@ -1,10 +1,12 @@
 import django_filters
+from django.db.models import F
 
 from airport.models import (
     City,
     Airport,
     Route,
     AirplaneType,
+    Airplane,
 )
 
 
@@ -42,7 +44,7 @@ class RouteFilter(django_filters.FilterSet):
         field_name="source__iata_code",
         lookup_expr="icontains",
     )
-    destination_iata = NumberInFilter(
+    destination_iata = django_filters.CharFilter(
         field_name="destination__iata_code",
         lookup_expr="icontains",
     )
@@ -58,3 +60,28 @@ class AirplaneTypeFilter(django_filters.FilterSet):
     class Meta:
         model = AirplaneType
         fields = ("name",)
+
+
+class AirplaneFilter(django_filters.FilterSet):
+    capacity_min = django_filters.NumberFilter(method="filter_capacity_min")
+    capacity_max = django_filters.NumberFilter(method="filter_capacity_max")
+    airplane_types = NumberInFilter(
+        field_name="airplane_type__id",
+    )
+    name = django_filters.CharFilter(lookup_expr="icontains")
+
+    class Meta:
+        model = Airplane
+        fields = ("capacity_min", "capacity_max", "airplane_types", "name",)
+
+    @staticmethod
+    def filter_capacity_min(queryset, name, value):
+        return queryset.annotate(
+            total_capacity=F("rows") * F("seats_in_row")
+        ).filter(total_capacity__gte=value)
+
+    @staticmethod
+    def filter_capacity_max(queryset, name, value):
+        return queryset.annotate(
+            total_capacity=F("rows") * F("seats_in_row")
+        ).filter(total_capacity__lte=value)

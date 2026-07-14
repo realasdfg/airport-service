@@ -8,6 +8,7 @@ from airport.filters import (
     AirportFilter,
     RouteFilter,
     AirplaneTypeFilter,
+    AirplaneFilter,
 )
 from airport.models import (
     City,
@@ -101,6 +102,7 @@ class AirplaneTypeViewSet(viewsets.ModelViewSet):
 
 class AirplaneViewSet(viewsets.ModelViewSet):
     queryset = Airplane.objects.all()
+    filterset_class = AirplaneFilter
 
     def get_serializer_class(self):
         if self.action == "list":
