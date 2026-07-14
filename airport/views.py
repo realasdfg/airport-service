@@ -162,7 +162,7 @@ class FlightViewSet(viewsets.ModelViewSet):
                     "route__destination__closest_big_city",
                     "airplane__airplane_type"
                 )
-                .prefetch_related("crew")
+                .prefetch_related("crew__position")
             )
 
         return queryset
