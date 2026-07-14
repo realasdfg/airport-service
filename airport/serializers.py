@@ -132,6 +132,15 @@ class FlightSerializer(serializers.ModelSerializer):
             "crew",
         )
 
+    def validate(self, attrs):
+        data = super(FlightSerializer, self).validate(attrs=attrs)
+        Flight.validate_times(
+            attrs["departure_time"],
+            attrs["arrival_time"],
+            ValidationError
+        )
+        return data
+
 
 class FlightListSerializer(FlightSerializer):
     route = serializers.StringRelatedField(
