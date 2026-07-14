@@ -1,6 +1,8 @@
 from django.db.models import F, Count
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from airport.filters import (
@@ -34,6 +36,7 @@ from airport.serializers import (
     RouteListSerializer,
     AirplaneTypeSerializer,
     AirplaneSerializer,
+    AirplaneImageSerializer,
     AirplaneListSerializer,
     AirplaneDetailSerializer,
     PositionSerializer,
@@ -113,6 +116,8 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             return AirplaneListSerializer
         if self.action == "retrieve":
             return AirplaneDetailSerializer
+        if self.action == "upload_image":
+            return AirplaneImageSerializer
 
         return AirplaneSerializer
 
@@ -123,6 +128,22 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             queryset = queryset.select_related("airplane_type")
 
         return queryset
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+        permission_classes=[IsAdminUser],
+    )
+    def upload_image(self, request, pk=None):
+        airplane = self.get_object()
+        serializer = self.get_serializer(airplane, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PositionViewSet(viewsets.ModelViewSet):

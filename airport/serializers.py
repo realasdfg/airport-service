@@ -86,8 +86,13 @@ class AirplaneSerializer(serializers.ModelSerializer):
             "seats_in_row",
             "airplane_type",
             "capacity",
-            "image",
         )
+
+
+class AirplaneImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Airplane
+        fields = ("id", "image",)
 
 
 class AirplaneListSerializer(AirplaneSerializer):
@@ -96,9 +101,33 @@ class AirplaneListSerializer(AirplaneSerializer):
         source="airplane_type.name",
     )
 
+    class Meta:
+        model = Airplane
+        fields = (
+            "id",
+            "name",
+            "rows",
+            "seats_in_row",
+            "airplane_type",
+            "capacity",
+            "image",
+        )
+
 
 class AirplaneDetailSerializer(AirplaneSerializer):
     airplane_type = AirplaneTypeSerializer(read_only=True)
+
+    class Meta:
+        model = Airplane
+        fields = (
+            "id",
+            "name",
+            "rows",
+            "seats_in_row",
+            "airplane_type",
+            "capacity",
+            "image",
+        )
 
 
 class PositionSerializer(serializers.ModelSerializer):
