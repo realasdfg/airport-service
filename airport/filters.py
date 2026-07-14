@@ -6,7 +6,7 @@ from airport.models import (
     Airport,
     Route,
     AirplaneType,
-    Airplane,
+    Airplane, Position,
 )
 
 
@@ -85,3 +85,11 @@ class AirplaneFilter(django_filters.FilterSet):
         return queryset.annotate(
             total_capacity=F("rows") * F("seats_in_row")
         ).filter(total_capacity__lte=value)
+
+
+class PositionFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr="icontains")
+
+    class Meta:
+        model = Position
+        fields = ("name",)
