@@ -86,6 +86,7 @@ class AirplaneSerializer(serializers.ModelSerializer):
             "seats_in_row",
             "airplane_type",
             "capacity",
+            "image",
         )
 
 
