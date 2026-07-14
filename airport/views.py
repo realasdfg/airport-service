@@ -7,6 +7,7 @@ from airport.filters import (
     CityFilter,
     AirportFilter,
     RouteFilter,
+    AirplaneTypeFilter,
 )
 from airport.models import (
     City,
@@ -95,6 +96,7 @@ class RouteViewSet(viewsets.ModelViewSet):
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
+    filterset_class = AirplaneTypeFilter
 
 
 class AirplaneViewSet(viewsets.ModelViewSet):

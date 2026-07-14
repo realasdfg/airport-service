@@ -4,6 +4,7 @@ from airport.models import (
     City,
     Airport,
     Route,
+    AirplaneType,
 )
 
 
@@ -49,3 +50,11 @@ class RouteFilter(django_filters.FilterSet):
     class Meta:
         model = Route
         fields = ("source", "destination", "source_iata", "destination_iata",)
+
+
+class AirplaneTypeFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr="icontains")
+
+    class Meta:
+        model = AirplaneType
+        fields = ("name",)
