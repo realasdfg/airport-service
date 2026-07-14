@@ -109,6 +109,17 @@ class CrewSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name", "position")
 
 
+class CrewListSerializer(CrewSerializer):
+    position = serializers.StringRelatedField(
+        read_only=True,
+        source="position.name",
+    )
+
+
+class CrewDetailSerializer(CrewSerializer):
+    position = PositionSerializer(read_only=True)
+
+
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
