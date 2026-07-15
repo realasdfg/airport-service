@@ -40,8 +40,7 @@ class City(CoordinatesMixin, models.Model):
         verbose_name_plural = "cities"
 
     def __str__(self):
-        return (f"{self.name}, {self.country} "
-                f"({self.latitude}, {self.longitude})")
+        return f"{self.name}, {self.country}"
 
 
 class Airport(CoordinatesMixin, models.Model):
