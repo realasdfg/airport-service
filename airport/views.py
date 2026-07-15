@@ -126,7 +126,13 @@ class AirportViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class RouteViewSet(viewsets.ModelViewSet):
+class RouteViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Route.objects.all()
     filterset_class = RouteFilter
 
@@ -347,8 +353,8 @@ class FlightViewSet(viewsets.ModelViewSet):
 
         queryset = queryset.annotate(
             tickets_available=(
-                F("airplane__rows") * F("airplane__seats_in_row")
-                - Count("tickets")
+                    F("airplane__rows") * F("airplane__seats_in_row")
+                    - Count("tickets")
             )
         )
 
