@@ -38,6 +38,7 @@ class City(CoordinatesMixin, models.Model):
 
     class Meta:
         verbose_name_plural = "cities"
+        ordering = ["name", "country"]
 
     def __str__(self):
         return f"{self.name}, {self.country}"
@@ -51,6 +52,9 @@ class Airport(CoordinatesMixin, models.Model):
         on_delete=models.PROTECT,
         related_name="airports"
     )
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
         return (f"{self.name} ({self.iata_code}) "
@@ -85,6 +89,7 @@ class Route(models.Model):
                 name="source_not_equal_destination_route",
             ),
         ]
+        ordering = ["source", "destination"]
 
     @staticmethod
     def validate_source_destination(source, destination, error_to_raise):
@@ -131,6 +136,9 @@ class Route(models.Model):
 class AirplaneType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
@@ -152,6 +160,9 @@ class Airplane(models.Model):
     )
     image = models.ImageField(null=True, upload_to=airplane_image_file_path)
 
+    class Meta:
+        ordering = ["name"]
+
     @property
     def capacity(self) -> int:
         return self.rows * self.seats_in_row
@@ -162,6 +173,9 @@ class Airplane(models.Model):
 
 class Position(models.Model):
     name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -177,6 +191,9 @@ class Crew(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        ordering = ["first_name", "last_name"]
 
     @property
     def full_name(self):
@@ -208,6 +225,7 @@ class Flight(models.Model):
                 name="arrival_time_later_than_departure_flight",
             ),
         ]
+        ordering = ["-departure_time"]
 
     @staticmethod
     def validate_times(departure_time, arrival_time, error_to_raise):
