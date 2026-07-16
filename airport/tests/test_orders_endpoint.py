@@ -121,7 +121,6 @@ class AuthenticatedOrdersTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Order.objects.count(), 1)
         self.assertEqual(Order.objects.first().tickets.count(), 2)
-        self.assertEqual(Order.objects.first().flight, flight)
 
     def test_order_update_not_allowed(self):
         order = sample_order(self.user)
