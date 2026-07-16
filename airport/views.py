@@ -379,7 +379,7 @@ class FlightViewSet(viewsets.ModelViewSet):
                 .prefetch_related("crew__position")
             )
 
-        return queryset
+        return queryset.order_by("-departure_time")
 
     @extend_schema(
         parameters=[
