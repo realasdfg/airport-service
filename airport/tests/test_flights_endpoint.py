@@ -3,7 +3,6 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -96,9 +95,15 @@ class AuthenticatedFlightsTests(TestCase):
         flight3 = sample_flight(airplane, crews,
                                 departure_time="2026-07-22T15:30Z",
                                 arrival_time="2026-07-22T17:00Z")
-        serializer1 = FlightListSerializer(self.flight_list_qs.get(pk=flight1.pk))
-        serializer2 = FlightListSerializer(self.flight_list_qs.get(pk=flight2.pk))
-        serializer3 = FlightListSerializer(self.flight_list_qs.get(pk=flight3.pk))
+        serializer1 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight1.pk)
+        )
+        serializer2 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight2.pk)
+        )
+        serializer3 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight3.pk)
+        )
 
         res = self.client.get(
             URL,
@@ -131,8 +136,12 @@ class AuthenticatedFlightsTests(TestCase):
         route1 = sample_route()
         flight1 = sample_flight(airplane, crews, route1)
         flight2 = sample_flight(airplane, crews)
-        serializer1 = FlightListSerializer(self.flight_list_qs.get(pk=flight1.pk))
-        serializer2 = FlightListSerializer(self.flight_list_qs.get(pk=flight2.pk))
+        serializer1 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight1.pk)
+        )
+        serializer2 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight2.pk)
+        )
 
         res = self.client.get(URL, {"route": route1.id})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -148,9 +157,15 @@ class AuthenticatedFlightsTests(TestCase):
         flight1 = sample_flight(airplane, [crew1])
         flight2 = sample_flight(airplane, [crew2])
         flight3 = sample_flight(airplane, [crew3])
-        serializer1 = FlightListSerializer(self.flight_list_qs.get(pk=flight1.pk))
-        serializer2 = FlightListSerializer(self.flight_list_qs.get(pk=flight2.pk))
-        serializer3 = FlightListSerializer(self.flight_list_qs.get(pk=flight3.pk))
+        serializer1 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight1.pk)
+        )
+        serializer2 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight2.pk)
+        )
+        serializer3 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight3.pk)
+        )
 
         res = self.client.get(URL, {"crews": f"{crew1.id},{crew2.id}"})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -166,8 +181,12 @@ class AuthenticatedFlightsTests(TestCase):
         crews = [sample_crew(pos), sample_crew(pos)]
         flight1 = sample_flight(airplane1, crews)
         flight2 = sample_flight(airplane2, crews)
-        serializer1 = FlightListSerializer(self.flight_list_qs.get(pk=flight1.pk))
-        serializer2 = FlightListSerializer(self.flight_list_qs.get(pk=flight2.pk))
+        serializer1 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight1.pk)
+        )
+        serializer2 = FlightListSerializer(
+            self.flight_list_qs.get(pk=flight2.pk)
+        )
 
         res = self.client.get(URL, {"has_available_tickets": "false"})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
