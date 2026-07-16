@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -37,7 +35,7 @@ class UnauthenticatedAirplaneTypesTests(TestCase):
 class AuthenticatedAirplaneTypesTests(TestCase):
     def setUp(self):
         self.client: APIClient = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = User.objects.create_user(
             "user@user.com", "password"
         )
         self.client.force_authenticate(self.user)
@@ -99,7 +97,7 @@ class AuthenticatedAirplaneTypesTests(TestCase):
 class AdminAirplaneTypesTests(TestCase):
     def setUp(self):
         self.client: APIClient = APIClient()
-        self.user = get_user_model().objects.create_superuser(
+        self.user = User.objects.create_superuser(
             "admin@user.com", "password"
         )
         self.client.force_authenticate(self.user)

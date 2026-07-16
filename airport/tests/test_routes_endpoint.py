@@ -45,7 +45,7 @@ class UnauthenticatedRoutesTests(TestCase):
 class AuthenticatedRoutesTests(TestCase):
     def setUp(self):
         self.client: APIClient = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = User.objects.create_user(
             "user@user.com", "password"
         )
         self.client.force_authenticate(self.user)
@@ -130,7 +130,7 @@ class AuthenticatedRoutesTests(TestCase):
 class AdminRoutesTests(TestCase):
     def setUp(self):
         self.client: APIClient = APIClient()
-        self.user = get_user_model().objects.create_superuser(
+        self.user = User.objects.create_superuser(
             "admin@user.com", "password"
         )
         self.client.force_authenticate(self.user)
