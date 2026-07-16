@@ -22,7 +22,7 @@ def sample_route(source=None, destination=None, **params):
     if not source:
         source = sample_airport()
     if not destination:
-        destination = sample_airport(iata_code="BBB")
+        destination = sample_airport()
     defaults = {
         "source": source,
         "destination": destination,
@@ -55,12 +55,10 @@ class AuthenticatedRoutesTests(TestCase):
         airport1 = sample_airport(
             closest_big_city=city,
             name="Sample airport2",
-            iata_code="CCC",
         )
         airport2 = sample_airport(
             closest_big_city=city,
             name="Sample airport2",
-            iata_code="DDD",
         )
         sample_route()
         sample_route(source=airport2, destination=airport1)
@@ -73,11 +71,10 @@ class AuthenticatedRoutesTests(TestCase):
 
     def test_route_list_filter_by_source(self):
         city = sample_city()
-        airport1 = sample_airport(city, iata_code="CCC")
+        airport1 = sample_airport(city, iata_code="AAA")
         airport2 = sample_airport(
             closest_big_city=city,
             name="Sample airport2",
-            iata_code="DDD",
         )
         route1 = sample_route(source=airport1, destination=airport2)
         route2 = sample_route(source=airport2, destination=airport1)
@@ -105,7 +102,7 @@ class AuthenticatedRoutesTests(TestCase):
     def test_route_create_forbidden(self):
         city = sample_city()
         source = sample_airport(closest_big_city=city)
-        destination = sample_airport(closest_big_city=city, iata_code="BBB")
+        destination = sample_airport(closest_big_city=city)
         data = {
             "source": source.id,
             "destination": destination.id,
@@ -138,7 +135,7 @@ class AdminRoutesTests(TestCase):
     def test_route_create(self):
         city = sample_city()
         source = sample_airport(closest_big_city=city)
-        destination = sample_airport(closest_big_city=city, iata_code="BBB")
+        destination = sample_airport(closest_big_city=city)
         data = {
             "source": source.id,
             "destination": destination.id,
@@ -151,7 +148,7 @@ class AdminRoutesTests(TestCase):
 
     def test_route_update_not_allowed(self):
         route = sample_route()
-        new_dest_airport = sample_airport(iata_code="CCC")
+        new_dest_airport = sample_airport()
         res = self.client.patch(
             detail_url(route.id),
             {"destination": new_dest_airport.id}

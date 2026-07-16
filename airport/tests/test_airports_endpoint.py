@@ -1,3 +1,5 @@
+import random
+import string
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
@@ -19,12 +21,14 @@ def detail_url(airport_id):
     return reverse("airport:airport-detail", args=[airport_id])
 
 
-def sample_airport(closest_big_city=None, **params):
+def sample_airport(closest_big_city=None, iata_code=None, **params):
     if not closest_big_city:
         closest_big_city = sample_city()
+    if not iata_code:
+        iata_code = "".join(random.choices(string.ascii_uppercase, k=3))
     defaults = {
         "name": "Sample airport",
-        "iata_code": "AAA",
+        "iata_code": iata_code,
         "closest_big_city": closest_big_city,
         "latitude": "20.5555",
         "longitude": "20.5555",
@@ -58,7 +62,6 @@ class AuthenticatedAirportsTests(TestCase):
         sample_airport(
             closest_big_city=city,
             name="Sample airport2",
-            iata_code="BBB",
         )
         serializer = AirportListSerializer(Airport.objects.all(), many=True)
 
@@ -70,8 +73,8 @@ class AuthenticatedAirportsTests(TestCase):
         city1 = sample_city()
         city2 = sample_city(country="Different country")
         airport1 = sample_airport(city1)
-        airport2 = sample_airport(closest_big_city=city1, iata_code="BBB")
-        airport3 = sample_airport(closest_big_city=city2, iata_code="CCC")
+        airport2 = sample_airport(closest_big_city=city1)
+        airport3 = sample_airport(closest_big_city=city2)
         serializer1 = AirportListSerializer(airport1)
         serializer2 = AirportListSerializer(airport2)
         serializer3 = AirportListSerializer(airport3)
@@ -84,8 +87,8 @@ class AuthenticatedAirportsTests(TestCase):
 
     def test_airport_list_filter_by_iata_code(self):
         city = sample_city()
-        airport1 = sample_airport(city)
-        airport2 = sample_airport(closest_big_city=city, iata_code="BBB")
+        airport1 = sample_airport(city, iata_code="AAA")
+        airport2 = sample_airport(city)
         serializer1 = AirportListSerializer(airport1)
         serializer2 = AirportListSerializer(airport2)
 
@@ -99,7 +102,6 @@ class AuthenticatedAirportsTests(TestCase):
         airport1 = sample_airport(city)
         airport2 = sample_airport(
             closest_big_city=city,
-            iata_code="BBB",
             name="Different airport",
         )
         serializer1 = AirportListSerializer(airport1)
@@ -115,8 +117,8 @@ class AuthenticatedAirportsTests(TestCase):
         city2 = sample_city()
         city3 = sample_city()
         airport1 = sample_airport(city1)
-        airport2 = sample_airport(closest_big_city=city2, iata_code="BBB")
-        airport3 = sample_airport(closest_big_city=city3, iata_code="CCC")
+        airport2 = sample_airport(closest_big_city=city2)
+        airport3 = sample_airport(closest_big_city=city3)
         serializer1 = AirportListSerializer(airport1)
         serializer2 = AirportListSerializer(airport2)
         serializer3 = AirportListSerializer(airport3)
